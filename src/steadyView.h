@@ -42,7 +42,12 @@ typedef enum {
     ModeDiversity
 } videoMode_t;
 
-uint8_t currentIndex;
+
+
+void SendIndexCmd(uint8_t index);
+void SetMode(videoMode_t mode);
+void rtc6705WriteRegister(uint32_t buf);
+uint32_t rtc6705readRegister(uint8_t readRegister);
 
 
 #endif

@@ -17,6 +17,27 @@ void setup() {
   delay(100);
 }
 
+// int r7index = 38;
+// int otherIndex = 16;
+
+// int tempIndex = r7index;
+
+int tempIndex = 0;
+
 void loop() {
-  
+  // if (tempIndex == r7index) {
+  //   tempIndex = otherIndex;
+  // } else {
+  //   tempIndex = r7index;
+  // }
+
+  tempIndex++;
+  if (tempIndex >= 48) {
+    tempIndex = 0;
+  }
+
+  Serial.print("tempIndex: ");
+  Serial.println(tempIndex);
+  SendIndexCmd(tempIndex);
+  delay(1000);
 }

@@ -1,5 +1,7 @@
 #include <steadyView.h>
 
+uint8_t currentIndex = 0;
+
 void SendIndexCmd(uint8_t index) {
     uint16_t f = frequencyTable[index];
     uint32_t data = ((((f - 479) / 2) / 32) << 7) | (((f - 479) / 2) % 32);
@@ -7,8 +9,15 @@ void SendIndexCmd(uint8_t index) {
 
     uint32_t currentRegisterData = SYNTHESIZER_REG_B | (RX5808_WRITE_CTRL_BIT << 4) | rtc6705readRegister(SYNTHESIZER_REG_B);
 
+    Serial.println("BEFORE");
+    Serial.print("curRegisterData: ");
+    Serial.println(currentRegisterData);
+    Serial.print("newRegisterData: ");
+    Serial.println(newRegisterData);
+
     if (newRegisterData != currentRegisterData)
     {
+        Serial.println("INSIDE");
         rtc6705WriteRegister(SYNTHESIZER_REG_A  | (RX5808_WRITE_CTRL_BIT << 4) | (0x8 << 5));
         rtc6705WriteRegister(newRegisterData);
     }
