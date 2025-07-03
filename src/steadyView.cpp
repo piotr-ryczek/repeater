@@ -8,6 +8,9 @@ SteadyView::SteadyView(byte mosiGpio, byte clkGpio, byte csGpio, MemoryValue* ba
     this->mosiGpio = mosiGpio;
     this->clkGpio = clkGpio;
     this->csGpio = csGpio;
+
+    this->delayActionExecutionThresholdMicros = 1000 * 100 * 5; // 500ms
+    this->delayedActionTimeMicros = 0;
 };
 
 void SteadyView::initialize() {
@@ -192,8 +195,12 @@ void SteadyView::increaseBandIndex() {
         newBandIndex++;
     }
 
-    this->setFrequency(newBandIndex, channelIndex);
-    this->saveBandAndChannel(newBandIndex, channelIndex);
+    delayedActionCallback = [this, newBandIndex, channelIndex] {
+        this->setFrequency(newBandIndex, channelIndex);
+        this->saveBandAndChannel(newBandIndex, channelIndex);
+    };
+
+    delayedActionTimeMicros = micros();
 }
 
 void SteadyView::increaseChannelIndex() {
@@ -209,8 +216,12 @@ void SteadyView::increaseChannelIndex() {
         newChannelIndex++;
     }
 
-    this->setFrequency(bandIndex, newChannelIndex);
-    this->saveBandAndChannel(bandIndex, newChannelIndex);
+    delayedActionCallback = [this, bandIndex, newChannelIndex] {
+        this->setFrequency(bandIndex, newChannelIndex);
+        this->saveBandAndChannel(bandIndex, newChannelIndex);
+    };
+
+    delayedActionTimeMicros = micros();
 }
 
 tuple<const char*, uint16_t> SteadyView::getBandAndChannel() {
@@ -218,4 +229,13 @@ tuple<const char*, uint16_t> SteadyView::getBandAndChannel() {
     uint16_t channelIndex = this->channelIndexMemory->readValue();
 
     return make_tuple(bandsTable[bandIndex], channelIndex);
+}
+
+void SteadyView::checkDelayedExecution() {
+    
+    // Kontynuuj:
+    // delayedActionTimeMicros czy roznica wieksza od threshold
+    // Jak wieksza, wykonuj i wyczysc pointer
+
+    delayedActionCallback = nullptr;
 }

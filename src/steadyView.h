@@ -52,6 +52,9 @@ class SteadyView {
         byte csGpio;
         MemoryValue* bandIndexMemory;
         MemoryValue* channelIndexMemory;
+        function<void()> delayedActionCallback;
+        unsigned long delayActionExecutionThresholdMicros;
+        unsigned long delayedActionTimeMicros;
 
         void rtc6705WriteRegister(uint32_t buf);
         uint32_t rtc6705readRegister(uint8_t readRegister);
@@ -70,6 +73,7 @@ class SteadyView {
         void increaseBandIndex();
         void increaseChannelIndex();
         tuple<const char*, uint16_t> getBandAndChannel();
+        void checkDelayedExecution();
 };
 
 #endif

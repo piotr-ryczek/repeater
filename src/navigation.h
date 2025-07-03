@@ -4,19 +4,25 @@
 #include <lcdDisplay.h>
 #include <voltageMeter.h>
 #include <steadyView.h>
+#include <functional>
 
-enum class AppMainStateEnum { Sleep, Awaken };
+using namespace std;
+
+enum class AppMainStateEnum { SLEEP, AWAKEN };
 enum class MainMenuEnum {
-    FREQUENCY,
+    BAND,
+    CHANNEL,
     MODE,
     VOLTAGE
 };
 
-extern const MainMenuEnum menu[4];
+extern const MainMenuEnum menuList[4];
 
 class Navigation {
   private:
     unsigned long lastActionMicros;
+    unsigned long sleepThresholdMicros;
+
     MainMenuEnum currentMainMenu;
     AppMainStateEnum appMainState;
 
@@ -29,6 +35,7 @@ class Navigation {
     void handleChangeValue();
     void handleChangeMenu();
     void checkIfShouldSleep();
+    void handleDisplay();
 };
 
 #endif

@@ -62,6 +62,8 @@ void loop() {
   mainButton.checkButtonPress();
 
   navigation.checkIfShouldSleep();
+  navigation.handleDisplay();
+  steadyView.checkDelayedExecution();
 
   delay(10);
 }
