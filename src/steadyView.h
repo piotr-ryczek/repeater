@@ -2,10 +2,10 @@
 #define STEADYVIEW_WRAPPER_H
 
 #include <Arduino.h>
+#include <memoryData.h>
+#include <tuple>
 
-#define PIN_MOSI  0
-#define PIN_CLK   1
-#define PIN_CS    2
+using namespace std;
 
 #define BIT_BANG_FREQ                               10000
 
@@ -28,7 +28,10 @@
 #define RX5808_DATA_LENGTH                          20
 #define RX5808_PACKET_LENGTH                        25
 
-const uint16_t frequencyTable[48] = {
+extern const uint16_t channelsTable[8];
+extern const char* bandsTable[6];
+
+const uint16_t frequenciesTable[48] = {
     5865, 5845, 5825, 5805, 5785, 5765, 5745, 5725, // A
     5733, 5752, 5771, 5790, 5809, 5828, 5847, 5866, // B
     5705, 5685, 5665, 5645, 5885, 5905, 5925, 5945, // E
@@ -42,12 +45,31 @@ typedef enum {
     ModeDiversity
 } videoMode_t;
 
+class SteadyView {
+    private:
+        byte mosiGpio;
+        byte clkGpio;
+        byte csGpio;
+        MemoryValue* bandIndexMemory;
+        MemoryValue* channelIndexMemory;
 
+        void rtc6705WriteRegister(uint32_t buf);
+        uint32_t rtc6705readRegister(uint8_t readRegister);
+        uint16_t getBandIndex(char* band);
+        uint16_t getChannelIndex(uint16_t channel);
+        uint16_t getFrequencyIndex(uint16_t bandIndex, uint16_t channelIndex);
+        uint16_t fetchFrequencyIndex();
+        void saveBandAndChannel(uint16_t bandIndex, uint16_t channelIndex);
 
-void SendIndexCmd(uint8_t index);
-void SetMode(videoMode_t mode);
-void rtc6705WriteRegister(uint32_t buf);
-uint32_t rtc6705readRegister(uint8_t readRegister);
-
+    public:
+        SteadyView(byte mosiGpio, byte clkGpio, byte csGpio, MemoryValue* bandIndexMemory, MemoryValue* channelIndexMemory);
+        void initialize();
+        void setMode(videoMode_t mode);
+        // void setFrequencyIndex(uint16_t frequencyIndex);
+        void setFrequency(uint16_t bandIndex, uint16_t channelIndex);
+        void increaseBandIndex();
+        void increaseChannelIndex();
+        tuple<const char*, uint16_t> getBandAndChannel();
+};
 
 #endif

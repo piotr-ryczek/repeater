@@ -3,14 +3,23 @@
 
 #include <Arduino.h>
 #include <esp_adc_cal.h>
+#include <config.h>
 
 class VoltageMeter {
-  public:
-    VoltageMeter(float batteryVoltage0Reference, float batteryVoltage100Reference);
-
   private:
+    esp_adc_cal_characteristics_t *adc_chars;
+    byte batteryVoltageMeterPin;
+    float resistorFirstValue;
+    float resistorSecondValue;
     float batteryVoltage0Reference;
     float batteryVoltage100Reference;
+    float calculatePercentage(float batteryVoltage);
+
+  public:
+    VoltageMeter(byte batteryVoltageMeterPin, float resistorFirstValue, float resistorSecondValue,  float batteryVoltage0Reference, float batteryVoltage100Reference);
+    void initialize();
+    float getVoltage();
+    String getBatteryVoltageMessage();
 }; 
 
 #endif

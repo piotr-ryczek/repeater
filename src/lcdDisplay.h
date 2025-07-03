@@ -7,9 +7,12 @@
 class LcdDisplay {
   private:
     LiquidCrystal_I2C* lcd;
+    String topRowText = "";
+    String bottomRowText = "";
 
   public:
-    LcdDisplay(LiquidCrystal_I2C* lcd)
+    LcdDisplay(LiquidCrystal_I2C* lcd);
+    
     void initialize();
     void backlight();
     void noBacklight();
