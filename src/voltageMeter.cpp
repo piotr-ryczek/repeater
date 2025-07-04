@@ -1,6 +1,6 @@
 #include <voltageMeter.h>
 
-VoltageMeter::VoltageMeter(byte batteryVoltageMeterPin, float resistorFirstValue, float resistorSecondValue, float batteryVoltage0Reference, float batteryVoltage100Reference) : batteryVoltageMeterPin(batteryVoltageMeterPin), resistorFirstValue(resistorFirstValue), resistorSecondValue(resistorSecondValue), batteryVoltage0Reference(batteryVoltage0Reference), batteryVoltage100Reference(batteryVoltage100Reference) {}
+VoltageMeter::VoltageMeter(byte batteryVoltageMeterPin, float resistorFirstValue, float resistorSecondValue, float batteryVoltage0Reference, float batteryVoltage100Reference, float &lastReadBatteryVoltage) : batteryVoltageMeterPin(batteryVoltageMeterPin), resistorFirstValue(resistorFirstValue), resistorSecondValue(resistorSecondValue), batteryVoltage0Reference(batteryVoltage0Reference), batteryVoltage100Reference(batteryVoltage100Reference), lastReadBatteryVoltage(lastReadBatteryVoltage) {}
 
 void VoltageMeter::initialize() {
     adc_chars = (esp_adc_cal_characteristics_t *)calloc(1, sizeof(esp_adc_cal_characteristics_t));
@@ -30,12 +30,12 @@ float VoltageMeter::getVoltage() {
     float batteryVoltageInmV = voltage * (resistorFirstValue + resistorSecondValue) / resistorSecondValue;
     float batteryVoltageInV = batteryVoltageInmV / 1000; // mV to V
 
+    this->lastReadBatteryVoltage = batteryVoltageInV;
+
     return batteryVoltageInV; // mV to V
 }
 
 String VoltageMeter::getBatteryVoltageMessage() {
-  float voltage = this->getVoltage();
-
-  return String(voltage) + "V (" + String(calculatePercentage(voltage)) + "%)";
+  return String(this->lastReadBatteryVoltage) + "V (" + String(calculatePercentage(this->lastReadBatteryVoltage)) + "%)";
 }
   

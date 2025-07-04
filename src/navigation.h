@@ -22,6 +22,7 @@ class Navigation {
   private:
     unsigned long lastActionMicros;
     unsigned long sleepThresholdMicros;
+    unsigned long lastDisplayBlink;
 
     MainMenuEnum currentMainMenu;
     AppMainStateEnum appMainState;

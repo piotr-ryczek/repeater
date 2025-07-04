@@ -14,9 +14,10 @@ class VoltageMeter {
     float batteryVoltage0Reference;
     float batteryVoltage100Reference;
     float calculatePercentage(float batteryVoltage);
+    float &lastReadBatteryVoltage;
 
   public:
-    VoltageMeter(byte batteryVoltageMeterPin, float resistorFirstValue, float resistorSecondValue,  float batteryVoltage0Reference, float batteryVoltage100Reference);
+    VoltageMeter(byte batteryVoltageMeterPin, float resistorFirstValue, float resistorSecondValue,  float batteryVoltage0Reference, float batteryVoltage100Reference, float &lastReadBatteryVoltage);
     void initialize();
     float getVoltage();
     String getBatteryVoltageMessage();

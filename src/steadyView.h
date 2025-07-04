@@ -45,6 +45,8 @@ typedef enum {
     ModeDiversity
 } videoMode_t;
 
+extern const videoMode_t modesTable[2];
+
 class SteadyView {
     private:
         byte mosiGpio;
@@ -52,9 +54,13 @@ class SteadyView {
         byte csGpio;
         MemoryValue* bandIndexMemory;
         MemoryValue* channelIndexMemory;
+        MemoryValue* modeIndexMemory;
         function<void()> delayedActionCallback;
         unsigned long delayActionExecutionThresholdMicros;
-        unsigned long delayedActionTimeMicros;
+        unsigned long delayedActionSetTimeMicros;
+        uint16_t temporaryBandIndex;
+        uint16_t temporaryChannelIndex;
+        uint16_t temporaryModeIndex;
 
         void rtc6705WriteRegister(uint32_t buf);
         uint32_t rtc6705readRegister(uint8_t readRegister);
@@ -63,16 +69,19 @@ class SteadyView {
         uint16_t getFrequencyIndex(uint16_t bandIndex, uint16_t channelIndex);
         uint16_t fetchFrequencyIndex();
         void saveBandAndChannel(uint16_t bandIndex, uint16_t channelIndex);
+        void saveMode(uint16_t modeIndex);
 
     public:
-        SteadyView(byte mosiGpio, byte clkGpio, byte csGpio, MemoryValue* bandIndexMemory, MemoryValue* channelIndexMemory);
+        SteadyView(byte mosiGpio, byte clkGpio, byte csGpio, MemoryValue* bandIndexMemory, MemoryValue* channelIndexMemory, MemoryValue* modeIndexMemory);
         void initialize();
         void setMode(videoMode_t mode);
         // void setFrequencyIndex(uint16_t frequencyIndex);
         void setFrequency(uint16_t bandIndex, uint16_t channelIndex);
         void increaseBandIndex();
         void increaseChannelIndex();
-        tuple<const char*, uint16_t> getBandAndChannel();
+        void increaseModeIndex();
+        tuple<const char*, uint16_t, uint16_t> getBandAndChannelAndFrequency();
+        String getMode();
         void checkDelayedExecution();
 };
 

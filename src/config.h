@@ -10,4 +10,6 @@ extern const float RESISTOR_SECOND_VALUE;
 extern const float BATTERY_VOLTAGE_0_REFERENCE;
 extern const float BATTERY_VOLTAGE_100_REFERENCE;
 
+extern float lastReadBatteryVoltage;
+
 #endif
